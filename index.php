@@ -11,14 +11,17 @@ $app = new \Slim\Slim(array(
   'mode' => APP_MODE
 ));
 
-$app->get("/users", function ()  use ($app, $mysqli) {
-  // Instantiate DRR api class
-  $api = new DRR_API($mysqli);
+// Instantiate DRR api class
+$api = new DRR_API($mysqli, $app);
+
+// ----------------------- Users ------------------------
+//Get active users
+$app->get("/users", function ()  use ($mysqli, $app, $api) {
   // params
   $offset = $app->request->params("off");
   $limit = $app->request->params("limit");
   
-  $api->get_users($app, $offset, $limit);
+  $api->get_users($offset, $limit);
 });
 
 $app->run();

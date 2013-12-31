@@ -1,16 +1,17 @@
 <?php
 
 class DRR_API {
-  function __construct($connect) {
+  function __construct($connect, $app) {
     $this->db = $connect;
+    $this->app = $app;
   }
   
-  public function get_users($app, $offset = 0, $max = 10) {
-    return ($offset != NULL && $max != NULL) ? $this->query_drr_users($app, $offset, $max) : $this->query_drr_users($app);
+  public function get_users($offset = 0, $max = 10) {
+    return ($offset != NULL && $max != NULL) ? $this->query_drr_users($offset, $max) : $this->query_drr_users();
   }
   
   // Get application users with pagination
-  protected function query_drr_users($app, $offset = 0, $max = 10) {
+  protected function query_drr_users($offset = 0, $max = 10) {
     $results = $this->db->query("select 
       users.name,
       comm_users.thumb as thumbnail,
@@ -31,13 +32,13 @@ class DRR_API {
         $users[$key]["status"] = $val["status"];
     }
     
-    return $this->toJSON($app, $users);
+    return $this->toJSON($users);
     $results->close();
   }
   
   // Output slim app with json content type
-  protected function toJSON($app, $data) {
-    $response = $app->response;
+  protected function toJSON($data) {
+    $response = $this->app->response;
     $response['Content-Type'] = 'application/json';
     $response->body( json_encode($data) );
   }
