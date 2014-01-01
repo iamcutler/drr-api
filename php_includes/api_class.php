@@ -7,19 +7,7 @@ class DRR_API {
   }
   
   public function get_users($offset = 0, $max = 10) {
-    return ($offset != NULL && $max != NULL) ? $this->query_drr_users($offset, $max) : $this->query_drr_users();
-  }
-  
-  // Get application users with pagination
-  protected function query_drr_users($offset = 0, $max = 10) {
-    $results = $this->db->query("select 
-      users.name,
-      comm_users.thumb as thumbnail,
-      comm_users.alias as slug,
-      comm_users.status
-      from ".TABLE_PREFIX."_users as users, ".TABLE_PREFIX."_community_users as comm_users
-      where users.id = comm_users.userid
-      limit $offset, $max");
+    $results = $this->query_drr_users($offset, $max);
     
     // Set empty users array to push results
     $users = [];
