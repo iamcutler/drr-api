@@ -24,4 +24,9 @@ $app->get("/users", function ()  use ($mysqli, $app, $api) {
   $api->get_users($offset, $limit);
 });
 
+// Latest user media
+$app->get("/latest-media/:offset/:limit", function($offset, $limit) use($mysqli, $api) {
+  $api->get_user_media($offset, $limit);
+});
+
 $app->run();
