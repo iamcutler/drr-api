@@ -15,7 +15,7 @@ class DRR_API {
     // Format array for json output
     foreach($results as $key => $val) {
         $users[$key]["name"] = $val["name"];
-        $users[$key]["thumbnail"] = $val["thumbnail"];
+        $users[$key]["thumbnail"] = CDN_HOST . $val["thumbnail"];
         $users[$key]["slug"] = $val["slug"];
         $users[$key]["status"] = $val["status"];
     }
