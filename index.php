@@ -16,11 +16,7 @@ $api = new DRR_API($mysqli, $app);
 
 // ----------------------- Users ------------------------
 //Get active users
-$app->get("/users", function ()  use ($mysqli, $app, $api) {
-  // params
-  $offset = $app->request->params("off");
-  $limit = $app->request->params("limit");
-  
+$app->get("/users/:offset/:limit", function ($offset, $limit) use ($mysqli, $api) {
   $api->get_users($offset, $limit);
 });
 
