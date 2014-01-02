@@ -43,6 +43,28 @@ class DRR_API {
     return $this->toJSON($media);
   }
   
+  public function get_current_poll($date) {
+    $results = $this->query_current_voting_polls($date);
+    
+    $poll = [];
+    foreach($results as $key => $val) {
+      $poll[] = $val;
+    }
+    
+    return $this->toJSON($poll);
+  }
+
+  public function get_voting_answers($poll_id) {
+    $results = $this->query_poll_answers($poll_id);
+
+    $answers = [];
+    foreach($results as $key => $val) {
+      $answers[] = $val;
+    }
+
+    return $this->toJSON($answers);
+  }
+  
   protected function query_drr_users($offset = 0, $max = 10) {
     $results = $this->db->query("select 
       users.name,
@@ -92,6 +114,20 @@ class DRR_API {
       order by media.created desc
       limit $offset, $max");
     
+    return $results;
+    $results->close();
+  }
+  
+  protected function query_current_voting_polls($date) {
+    $results = $this->db->query("select question, date_start, date_end, number_answers, voting_period, created from drr_sexy_polls where date_start <= NOW() and date_end >= NOW() and published = 1");
+    
+    return $results;
+    $results->close();
+  }
+
+  protected function query_poll_answers($poll) {
+    $results = $this->db->query("select name, thumbnail, username, caption, ordering from drr_sexy_answers where id_poll = $poll and published = 1 order by name");
+
     return $results;
     $results->close();
   }

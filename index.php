@@ -25,4 +25,13 @@ $app->get("/latest-media/:offset/:limit", function($offset, $limit) use($mysqli,
   $api->get_user_media($offset, $limit);
 });
 
+// Voting
+$app->get("/current-voting", function() use($mysqli, $api) {
+  $api->get_current_poll("NOW()");
+});
+
+$app->get("/voting-answers/:id", function($id) use ($mysqli, $api) {
+  $api->get_voting_answers($id);
+});
+
 $app->run();
