@@ -34,4 +34,9 @@ $app->get("/voting-answers/:id", function($id) use ($mysqli, $api) {
   $api->get_voting_answers($id);
 });
 
+// --------------------- Dirty Girls ---------------------
+$app->get("/dirty-girls", function() use ($mysqli, $api) {
+  $api->get_dirty_girls();
+});
+
 $app->run();

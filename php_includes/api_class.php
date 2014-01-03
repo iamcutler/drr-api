@@ -64,6 +64,17 @@ class DRR_API {
 
     return $this->toJSON($answers);
   }
+
+  public function get_dirty_girls() {
+    $results = $this->query_dirty_girls();
+
+    $girls = [];
+    foreach($results as $key => $val) {
+      $girls[] = $val;
+    }
+
+    return $this->toJSON($girls);
+  }
   
   protected function query_drr_users($offset = 0, $max = 10) {
     $results = $this->db->query("select 
@@ -132,6 +143,21 @@ class DRR_API {
     $results->close();
   }
   
+  protected function query_dirty_girls() {
+    $results = $this->db->query("select
+      id,
+      campaign_month,
+      campaign_year,
+      dirty_girl_name as name,
+      dirty_girl_bio as bio,
+      dirty_type as type,
+      thumbnail_image as thumbnail,
+      ordering
+      from ".TABLE_PREFIX."_dirtygirlpages_ order by ordering ASC");
+
+    return $results;
+    $results->close();
+  }
   // Output slim app with json content type
   protected function toJSON($data) {
     $response = $this->app->response;
