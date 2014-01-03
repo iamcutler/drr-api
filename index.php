@@ -20,6 +20,11 @@ $app->get("/users/:offset/:limit", function ($offset, $limit) use ($mysqli, $api
   $api->get_users($offset, $limit);
 });
 
+// User profile
+$app->get("/profile/:slug", function($slug) use ($mysqli, $api) {
+  $api->get_user_profile($slug);
+});
+
 // Latest user media
 $app->get("/latest-media/:offset/:limit", function($offset, $limit) use($mysqli, $api) {
   $api->get_user_media($offset, $limit);
