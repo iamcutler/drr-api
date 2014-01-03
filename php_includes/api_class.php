@@ -130,14 +130,14 @@ class DRR_API {
   }
   
   protected function query_current_voting_polls($date) {
-    $results = $this->db->query("select question, date_start, date_end, number_answers, voting_period, created from drr_sexy_polls where date_start <= NOW() and date_end >= NOW() and published = 1");
+    $results = $this->db->query("select question, date_start, date_end, number_answers, voting_period, created from ".TABLE_PREFIX."_sexy_polls where date_start <= NOW() and date_end >= NOW() and published = 1");
     
     return $results;
     $results->close();
   }
 
   protected function query_poll_answers($poll) {
-    $results = $this->db->query("select name, thumbnail, username, caption, ordering from drr_sexy_answers where id_poll = $poll and published = 1 order by name");
+    $results = $this->db->query("select name, thumbnail, username, caption, ordering from ".TABLE_PREFIX."_sexy_answers where id_poll = $poll and published = 1 order by name");
 
     return $results;
     $results->close();
