@@ -70,7 +70,14 @@ class DRR_API {
 
     $girls = [];
     foreach($results as $key => $val) {
-      $girls[] = $val;
+      $girls[$key]['id'] = $val['id'];
+      $girls[$key]['campaign_month'] = $val['campaign_month'];
+      $girls[$key]['campaign_year'] = $val['campaign_year'];
+      $girls[$key]['name'] = $val['name'];
+      $girls[$key]['biography'] = $val['bio'];
+      $girls[$key]['type'] = $val['type'];
+      $girls[$key]['thumbnail'] = CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" .$val['thumbnail'];
+      $girls[$key]['order'] = $val['ordering'];
     }
 
     return $this->toJSON($girls);
