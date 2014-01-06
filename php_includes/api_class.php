@@ -15,7 +15,7 @@ class DRR_API {
     // Format array for json output
     foreach($results as $key => $val) {
         $users[$key]["name"] = $val["name"];
-        $users[$key]["thumbnail"] = CDN_HOST . $val["thumbnail"];
+        $users[$key]["thumbnail"] = CDN_DOMAIN . $val["thumbnail"];
         $users[$key]["slug"] = $val["slug"];
         $users[$key]["status"] = $val["status"];
     }
@@ -32,10 +32,10 @@ class DRR_API {
     foreach($results as $key => $val) {
       // User object
       $media[$key]['user']['name'] = $val['name'];
-      $media[$key]['user']['thumbnail'] = CDN_HOST. $val['user_thumbnail'];
+      $media[$key]['user']['thumbnail'] = CDN_DOMAIN. $val['user_thumbnail'];
       $media[$key]['user']['slug'] = $val['user_slug'];
       $media[$key]['media']['title'] = $val['title'];
-      $media[$key]['media']['thumbnail'] = CDN_HOST . $val['media_thumbnail'];
+      $media[$key]['media']['thumbnail'] = CDN_DOMAIN . $val['media_thumbnail'];
       $media[$key]['media']['type'] = $val['type'];
       $media[$key]['media']['created_at'] = $val['created'];
     }
