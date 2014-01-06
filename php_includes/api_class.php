@@ -176,6 +176,7 @@ class DRR_API {
     $results = $this->db->query("select
       user.id,
       user.name,
+      user.username,
       user.registerDate as registered,
       user.lastvisitDate as last_visit,
       comm_user.status,
@@ -205,6 +206,7 @@ class DRR_API {
       // User array
       $profile[$key]['user']['id'] = $val['id'];
       $profile[$key]['user']['name'] = $val['name'];
+      $profile[$key]['user']['username'] = $val['username'];
       $profile[$key]['user']['slug'] = $val['slug'];
       $profile[$key]['user']['thumbnail'] = $val['thumbnail'];
       // Profile array
