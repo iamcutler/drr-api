@@ -66,7 +66,7 @@ class DRR_API {
   }
 
   public function get_dirty_girls() {
-    $results = $this->query_dirty_girls();
+    $results = $this->find_all_dirty_girls();
 
     $girls = [];
     foreach($results as $key => $val) {
@@ -77,6 +77,11 @@ class DRR_API {
       $girls[$key]['biography'] = $val['bio'];
       $girls[$key]['type'] = $val['type'];
       $girls[$key]['thumbnail'] = CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" .$val['thumbnail'];
+      $girls[$key]['image_1'] = ($val['image_1'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_1'] : "";
+      $girls[$key]['image_2'] = ($val['image_2'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_2'] : "";
+      $girls[$key]['image_3'] = ($val['image_3'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_3'] : "";
+      $girls[$key]['image_4'] = ($val['image_4'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_4'] : "";
+      $girls[$key]['image_5'] = ($val['image_5'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_5'] : "";
       $girls[$key]['order'] = $val['ordering'];
     }
 
@@ -156,7 +161,7 @@ class DRR_API {
     $results->close();
   }
   
-  protected function query_dirty_girls() {
+  protected function find_all_dirty_girls() {
     $results = $this->db->query("select
       id,
       campaign_month,
@@ -165,6 +170,11 @@ class DRR_API {
       dirty_girl_bio as bio,
       dirty_type as type,
       thumbnail_image as thumbnail,
+      image_1,
+      image_2,
+      image_3,
+      image_4,
+      image_5,
       ordering
       from ".TABLE_PREFIX."_dirtygirlpages_ order by ordering ASC");
 
