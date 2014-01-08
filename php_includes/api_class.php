@@ -326,6 +326,13 @@ class DRR_API {
     $results->close();
   }
 
+  protected function find_user_hash_by_id($id) {
+    $result = $this->db->query("select user_hash from ".TABLE_PREFIX."_users where id = $id LIMIT 1");
+
+    return $result->fetch_array()['user_hash'];
+    $result->close();
+  }
+
   // Output slim app with json content type
   protected function toJSON($data) {
     $response = $this->app->response;

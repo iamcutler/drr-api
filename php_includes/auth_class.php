@@ -10,11 +10,7 @@ class Authentication extends DRR_API {
       // Check if user email adrress has been used
       if(!$this->check_email_uniqueness($user['email'])) {
         // Save user data
-        if($this->save_new_user($user)) {
-          $results = ['status' => true];
-        } else {
-          $results = ['status' => false, 'code' => '1001', 'message' => 'something went wrong during registration. Please report this bug. Sorry for the inconvenience'];
-        }
+        $results = $this->save_new_user($user);
       } else {
         $results = ['status' => false, 'code' => '101', 'message' => 'email address has already been used'];
       }
@@ -77,7 +73,6 @@ class Authentication extends DRR_API {
     $password = $this->generate_user_password($user['password']);
     $dob = makeSQLSafe($this->db, $user['dob']);
     $user_hash = $this->generate_user_hash($name, $username);
-    $result = 0;
 
     // Save default user table
     $save_user = $this->db->query("insert into ".TABLE_PREFIX."_users 
@@ -92,11 +87,11 @@ class Authentication extends DRR_API {
       // Save community user relationship data
       $save_comm_relation = $this->db->query("insert into ".TABLE_PREFIX."_community_users (userid, alias) values ($user_id, '$user_slug')");
       if($save_comm_relation) {
-        $result = 1;
+        return ['status' => true, 'user_hash' => $this->find_user_hash_by_id($user_id)];
       }
     }
-
-    return $result;
+    
+    return ['status' => false, 'code' => '1001', 'message' => 'something went wrong during registration. Please report this bug. Sorry for the inconvenience'];
   }
 }
 
