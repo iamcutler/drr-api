@@ -1,11 +1,10 @@
 <?php
-
 class DRR_API {
   function __construct($connect, $app) {
     $this->db = $connect;
     $this->app = $app;
   }
-  
+
   public function get_users($offset = 0, $max = 10) {
     $results = $this->query_drr_users($offset, $max);
     
@@ -48,7 +47,12 @@ class DRR_API {
     
     $poll = [];
     foreach($results as $key => $val) {
-      $poll[] = $val;
+      $poll[$key]['poll']['question'] = $val['question'];
+      $poll[$key]['poll']['question'] = $val['question'];
+      $poll[$key]['poll']['date_start'] = $val['date_start'];
+      $poll[$key]['poll']['date_end'] = $val['date_end'];
+      $poll[$key]['poll']['voting_period'] = $val['voting_period'];
+      $poll[$key]['poll']['created'] = $val['created'];
     }
     
     return $this->toJSON($poll);
@@ -76,13 +80,13 @@ class DRR_API {
       $girls[$key]['name'] = $val['name'];
       $girls[$key]['biography'] = $val['bio'];
       $girls[$key]['type'] = $val['type'];
-      $girls[$key]['thumbnail'] = CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" .$val['thumbnail'];
-      $girls[$key]['image_1'] = ($val['image_1'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_1'] : "";
-      $girls[$key]['image_2'] = ($val['image_2'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_2'] : "";
-      $girls[$key]['image_3'] = ($val['image_3'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_3'] : "";
-      $girls[$key]['image_4'] = ($val['image_4'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_4'] : "";
-      $girls[$key]['image_5'] = ($val['image_5'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_5'] : "";
       $girls[$key]['order'] = $val['ordering'];
+      $girls[$key]['media']['thumbnail'] = CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" .$val['thumbnail'];
+      $girls[$key]['media']['image_1'] = ($val['image_1'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_1'] : "";
+      $girls[$key]['media']['image_2'] = ($val['image_2'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_2'] : "";
+      $girls[$key]['media']['image_3'] = ($val['image_3'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_3'] : "";
+      $girls[$key]['media']['image_4'] = ($val['image_4'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_4'] : "";
+      $girls[$key]['media']['image_5'] = ($val['image_5'] != "") ? CDN_DOMAIN . "/administrator/components/com_dirtygirlpages/uploads/" . $val['image_5'] : "";
     }
 
     return $this->toJSON($girls);
@@ -93,7 +97,7 @@ class DRR_API {
 
     return $this->toJSON($profile);
   }
-  
+
   protected function query_drr_users($offset = 0, $max = 10) {
     $results = $this->db->query("select 
       users.name,
@@ -148,13 +152,20 @@ class DRR_API {
   }
   
   protected function query_current_voting_polls($date) {
-    $results = $this->db->query("select question, date_start, date_end, number_answers, voting_period, created from ".TABLE_PREFIX."_sexy_polls where date_start <= NOW() and date_end >= NOW() and published = 1");
+    $results = $this->db->query("select id, question, date_start, date_end, number_answers, voting_period, created from ".TABLE_PREFIX."_sexy_polls where date_start <= NOW() and date_end >= NOW() and published = 1");
     
     return $results;
     $results->close();
   }
 
   protected function query_poll_answers($poll) {
+    $results = $this->db->query("select name, thumbnail, username, caption, ordering from ".TABLE_PREFIX."_sexy_answers where id_poll = $poll and published = 1 order by name");
+
+    return $results;
+    $results->close();
+  }
+
+  protected function find_poll_answers_by_id($poll) {
     $results = $this->db->query("select name, thumbnail, username, caption, ordering from ".TABLE_PREFIX."_sexy_answers where id_poll = $poll and published = 1 order by name");
 
     return $results;
@@ -231,15 +242,19 @@ class DRR_API {
       foreach($this->find_user_friends_by_id($val['friends']) as $k => $v) {
         $profile[$key]['friends'][] = $v;
       }
+      // Media array
+      $profile[$key]['media'] = [];
       // Photos albums array
-      $profile[$key]['photo_albums'] = [];
       foreach($this->find_user_albums_by_id($val['id']) as $k => $v) {
-        $profile[$key]['photo_albums'][] = $v;
+        $profile[$key]['media']['photo_albums'][] = $v;
       }
-      //Photos array
-      $profile[$key]['photos'] = [];
+      // Photos array
       foreach($this->find_user_photos_by_id($val['id']) as $k => $v) {
-        $profile[$key]['photos'][] = $v;
+        $profile[$key]['media']['photos'][] = $v;
+      }
+      // Videos array
+      foreach($this->find_user_videos_by_id($val['id']) as $k => $v) {
+        $profile[$key]['media']['videos'][] = $v;
       }
       // Groups array
       $profile[$key]['groups'] = [];
@@ -326,6 +341,20 @@ class DRR_API {
     $results->close();
   }
 
+  protected function find_user_videos_by_id($user) {
+    $results = $this->db->query("select * from ".TABLE_PREFIX."_community_videos where creator = $user order by created DESC");
+
+    return $results;
+    $results->close();
+  }
+
+  protected function find_profile_feed_by_id($id) {
+    $results = $this->db->query("");
+
+    return $results;
+    $results->close();
+  }
+
   protected function find_user_hash_by_id($id) {
     $result = $this->db->query("select user_hash from ".TABLE_PREFIX."_users where id = $id LIMIT 1");
 
@@ -334,9 +363,10 @@ class DRR_API {
   }
 
   // Output slim app with json content type
-  protected function toJSON($data) {
+  public function toJSON($data) {
     $response = $this->app->response;
     $response['Content-Type'] = 'application/json';
+    //$data = iconv('UTF-8', 'UTF-8//TRANSLIT', $data);
     $response->body( json_encode($data) );
   }
 }
