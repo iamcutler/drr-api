@@ -17,6 +17,8 @@ $app = new \Slim\Slim(array(
 // Instantiate DRR api class
 $api = new DRR_API($mysqli, $app);
 $auth = new Authentication($mysqli, $app);
+$user = new User($mysqli, $app);
+
 // -------------------- Registration --------------------
 $app->post("/user/registration", function () use ($mysqli, $auth) {
   //$data = ['name' => 'John Westfield', 'username' => 'test2342', 'email' => 'test@test.com', 'password' => 'testingAPI123', 'dob' => '03/08/1988'];
@@ -43,8 +45,8 @@ $app->get("/users/:offset/:limit", function ($offset, $limit) use ($mysqli, $api
 });
 
 // User profile
-$app->get("/profile/:slug", function($slug) use ($mysqli, $api) {
-  $api->get_user_profile($slug);
+$app->get("/profile/:slug", function($slug) use ($mysqli, $user) {
+  $user->get_user_profile($slug);
 });
 
 // Latest user media
