@@ -88,6 +88,13 @@ class Authentication extends DRR_API {
       return $salt . sha1($salt . rand(5, 20) . date("Y-m-d"));
     }
   }
+  
+  protected function find_user_hash_by_id($id) {
+    $result = $this->db->query("select user_hash from ".TABLE_PREFIX."_users where id = $id LIMIT 1");
+
+    return $result->fetch_array()['user_hash'];
+    $result->close();
+  }
 
   public function generate_user_password($password) {
     $salt = AuthHelper::genRandomPassword(32);

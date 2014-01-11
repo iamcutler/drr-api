@@ -1,10 +1,14 @@
 <?php
 
-class User extends DRR_API {
+class User extends Authentication {
   public function get_user_profile($slug) {
     $profile = $this->generate_user_profile_data_from_slug($slug);
 
     return $this->toJSON($profile);
+  }
+  
+  public function generate_user_password($password) {
+    parent::generate_user_password($password);
   }
   
   // Generate complete user profile data
@@ -179,11 +183,8 @@ class User extends DRR_API {
   }
   
   protected function find_user_hash_by_id($id) {
-    $result = $this->db->query("select user_hash from ".TABLE_PREFIX."_users where id = $id LIMIT 1");
-
-    return $result->fetch_array()['user_hash'];
-    $result->close();
-  }
+    parent::find_user_hash_by_id($id);
+  }  
 }
 
 ?>
