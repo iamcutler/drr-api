@@ -22,6 +22,7 @@ class User extends Authentication {
       $profile[$key]['user']['name'] = $val['name'];
       $profile[$key]['user']['username'] = $val['username'];
       $profile[$key]['user']['slug'] = $val['slug'];
+      $profile[$key]['user']['avatar'] = $val['avatar'];
       $profile[$key]['user']['thumbnail'] = $val['thumbnail'];
       // Profile array
       $profile[$key]['profile']['status'] = $val['status'];
@@ -81,6 +82,7 @@ class User extends Authentication {
       user.registerDate as registered,
       user.lastvisitDate as last_visit,
       comm_user.status,
+      comm_user.avatar,
       comm_user.thumb as thumbnail,
       comm_user.view as views,
       comm_user.friends,
