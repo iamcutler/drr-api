@@ -45,7 +45,7 @@ $app->get("/users/:offset/:limit", function ($offset, $limit) use ($mysqli, $api
 });
 
 // User profile
-$app->get("/profile/:slug", function($slug) use ($mysqli, $user) {
+$app->post("/profile/:slug", function($slug) use ($mysqli, $user) {
   $user->get_user_profile($slug);
 });
 
